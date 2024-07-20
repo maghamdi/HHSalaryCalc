@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة الرواتب</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            text-align: right;
+        }
+        .comment {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+        .links {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #007bff;
+        }
+        .links a {
+            color: #007bff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>حاسبة راتبك في صحة القابضة</h1>
+        <input type="text" id="net_salary" placeholder="أدخل صافي الراتب">
+        <button onclick="calculate()">احسب</button>
+        <div class="result" id="result"></div>
+        <div class="comment">هذه حاسبة تقريبية في حال كان راتب صحة القابضة الصافي مساوي لراتبك الصافي الحالي.</div>
+        <div class="links">
+            <a href="https://www.linkedin.com/in/maghamdi" target="_blank">LinkedIn</a> |
+            <a href="https://twitter.com/maghamdi" target="_blank">X (Twitter)</a>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            const net_salary = document.getElementById('net_salary').value;
+
+            fetch('/calculate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `net_salary=${net_salary}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = `
+                    <p>الراتب الأساسي: ${data.base_salary}</p>
+                    <p>بدل السكن: ${data.housing_allowance}</p>
+                    <p>بدل النقل: ${data.transportation_allowance}</p>
+                    <p>خصم التأمينات الاجتماعية: ${data.social_security_deduction}</p>
+                    <p>الراتب الإجمالي: ${data.total_salary}</p>
+                    <p>صافي الراتب: ${data.net_salary}</p>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
